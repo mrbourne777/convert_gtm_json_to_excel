@@ -8,6 +8,24 @@ def load_json(file_path):
     with open(file_path, 'r') as f:
         return json.load(f)
 
+# Create a dictionary to map variable types to their descriptive names
+variable_type_dict = {
+    'v': 'DataLayer Variable',
+    'c': 'Constant',
+    'gas': 'Google Analytics Setting',
+    'u': 'URL',
+    'j': 'JavaScript Variable',
+    'jsm': 'Custom JavaScript',
+    'd': 'DOM Element',
+    'k': 'First Party Cookie',
+    'remm': 'RegEx Table',
+    'aev': 'Auto-Event Variable',
+    'awec': 'User-Provided Data',
+    'smm': 'Lookup Table',
+    'gtcs': 'Google Tag Configuration Setting',
+    'gtes': 'Google Tag Event Setting',
+}
+
 # Process the GTM data to extract tags and triggers
 def process_gtm_data(json_data):
     # Extract tags and triggers
@@ -46,17 +64,26 @@ def process_gtm_data(json_data):
     # Variables
     variable_data = []
     for variable in variables:
-        variable_data.append([variable.get('variableId', 'N/A'), variable.get('name', 'N/A'), variable.get('type', 'N/A')])
+        # Check if the variable starts with 'cvt_'
+        var_name = variable.get('name', 'N/A')
+        var_type = variable.get('type', 'N/A')
+
+        if var_name.startswith('cvt_'):
+            var_description = 'Custom Variable'  # For custom variables
+        else:
+            var_description = variable_type_dict.get(var_type, 'Unknown Type')
+
+        variable_data.append([variable.get('variableId', 'N/A'), variable.get('name', 'N/A'), variable.get('type', 'N/A'), var_description])
     
     # Convert to DataFrames for Excel output
     tag_df = pd.DataFrame(tag_data, columns=['Tag ID', 'Tag Name', 'Tag Type', 'Firing Triggers', 'Blocking Triggers'])
     trigger_df = pd.DataFrame(trigger_data, columns=['Trigger ID', 'Trigger Name'])
-    variable_df = pd.DataFrame(variable_data, columns=['Variable ID', 'Variable Name', 'Variable Type'])
+    variable_df = pd.DataFrame(variable_data, columns=['Variable ID', 'Variable Name', 'Variable Type', 'Variable Description'])
 
     # Convert to DataFrames for Excel output
     tag_df = pd.DataFrame(tag_data, columns=['Tag ID', 'Tag Name', 'Tag Type', 'Firing Triggers', 'Blocking Triggers'])
     trigger_df = pd.DataFrame(trigger_data, columns=['Trigger ID', 'Trigger Name'])
-    variable_df = pd.DataFrame(variable_data, columns=['Variable ID', 'Variable Name', 'Variable Type'])
+    variable_df = pd.DataFrame(variable_data, columns=['Variable ID', 'Variable Name', 'Variable Type', 'Variable Description'])
     
     return tag_df, trigger_df, variable_df
 
@@ -87,7 +114,7 @@ def main(json_file):
     print(f"Excel file saved as {output_excel_file}")
 
 # Specify the input and output files
-json_file = 'containers/path_to_file.json'  # Change this to the path of your GTM container JSON file
+json_file = 'containers/GTM-XXXXXX.json'  # Change this to the name of your GTM container JSON file
 
 # Execute the script
 main(json_file)
