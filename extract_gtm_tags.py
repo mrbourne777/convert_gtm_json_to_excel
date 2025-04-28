@@ -28,6 +28,7 @@ def process_gtm_data(json_data):
     # Prepare data for the first sheet: Tags (Name, Type, Firing Triggers, Blocking Triggers)
     tag_data = []
     for tag in tags:
+        tag_id = tag.get('tagId', 'N/A')
         tag_name = tag.get('name', 'N/A')
         tag_type = tag.get('type', 'N/A')
         
@@ -35,27 +36,27 @@ def process_gtm_data(json_data):
         firing_triggers = [trigger['name'] for trigger in triggers if trigger['triggerId'] in tag.get('firingTriggerId', [])]
         blocking_triggers = [trigger['name'] for trigger in triggers if trigger['triggerId'] in tag.get('blockingTriggerId', [])]
         
-        tag_data.append([tag_name, tag_type, ', '.join(firing_triggers), ', '.join(blocking_triggers)])
+        tag_data.append([tag_id, tag_name, tag_type, ', '.join(firing_triggers), ', '.join(blocking_triggers)])
     
     # Prepare data for the second sheet: Triggers (Name, ID)
     trigger_data = []
     for trigger in triggers:
-        trigger_data.append([trigger.get('name', 'N/A'), trigger.get('triggerId', 'N/A')])
+        trigger_data.append([trigger.get('triggerId', 'N/A'), trigger.get('name', 'N/A')])
 
     # Variables
     variable_data = []
     for variable in variables:
-        variable_data.append([variable.get('name', 'N/A'), variable.get('variableId', 'N/A'), variable.get('type', 'N/A')])
+        variable_data.append([variable.get('variableId', 'N/A'), variable.get('name', 'N/A'), variable.get('type', 'N/A')])
     
     # Convert to DataFrames for Excel output
-    tag_df = pd.DataFrame(tag_data, columns=['Tag Name', 'Tag Type', 'Firing Triggers', 'Blocking Triggers'])
-    trigger_df = pd.DataFrame(trigger_data, columns=['Trigger Name', 'Trigger ID'])
-    variable_df = pd.DataFrame(variable_data, columns=['Variable Name', 'Variable ID', 'Variable Type'])
+    tag_df = pd.DataFrame(tag_data, columns=['Tag ID', 'Tag Name', 'Tag Type', 'Firing Triggers', 'Blocking Triggers'])
+    trigger_df = pd.DataFrame(trigger_data, columns=['Trigger ID', 'Trigger Name'])
+    variable_df = pd.DataFrame(variable_data, columns=['Variable ID', 'Variable Name', 'Variable Type'])
 
     # Convert to DataFrames for Excel output
-    tag_df = pd.DataFrame(tag_data, columns=['Tag Name', 'Tag Type', 'Firing Triggers', 'Blocking Triggers'])
-    trigger_df = pd.DataFrame(trigger_data, columns=['Trigger Name', 'Trigger ID'])
-    variable_df = pd.DataFrame(variable_data, columns=['Variable Name', 'Variable ID', 'Variable Type'])
+    tag_df = pd.DataFrame(tag_data, columns=['Tag ID', 'Tag Name', 'Tag Type', 'Firing Triggers', 'Blocking Triggers'])
+    trigger_df = pd.DataFrame(trigger_data, columns=['Trigger ID', 'Trigger Name'])
+    variable_df = pd.DataFrame(variable_data, columns=['Variable ID', 'Variable Name', 'Variable Type'])
     
     return tag_df, trigger_df, variable_df
 
@@ -86,7 +87,7 @@ def main(json_file):
     print(f"Excel file saved as {output_excel_file}")
 
 # Specify the input and output files
-json_file = 'containers/your_file_name_here.json'  # Change this to the path of your GTM container JSON file
+json_file = 'containers/path_to_file.json'  # Change this to the path of your GTM container JSON file
 
 # Execute the script
 main(json_file)
