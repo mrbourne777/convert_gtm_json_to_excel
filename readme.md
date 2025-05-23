@@ -1,88 +1,84 @@
 # GTM Tag and Trigger Extraction
 
-This project extracts tags and triggers from a GTM container exported in JSON format and outputs them into an Excel file. The tags sheet contains information about each tag, including its name, type, firing triggers, and blocking triggers. The triggers sheet contains the names and IDs of the triggers. The variables sheet contains the names and IDs of the variables.
+This project extracts **Tags**, **Triggers**, and **Variables** from a GTM container exported in JSON format and outputs them into an Excel file. The script resolves custom template tag types (e.g., `cvt_`) and uses a YAML-based configuration to manage variable type labels and built-in triggers.
 
-## Prerequisites
+## 📦 Features
 
-Ensure you have the following software installed:
+- CLI-based execution with `--json` parameter
+- Resolves custom tag template IDs to their human-readable names
+- Modular codebase with reusable functions
+- Configuration-driven using `mappings.yaml`
+- Outputs a clean Excel file with the following sheets:
+  - **Tags:** Tag ID, Name, Type, Firing Triggers, Blocking Triggers
+  - **Triggers:** Trigger ID, Name
+  - **Variables:** Variable ID, Name, Type, Description
 
-- Python (version 3.x)
+---
+
+## ✅ Prerequisites
+
+Ensure you have the following installed:
+
+- Python 3.x
 - `pip` (Python package manager)
 
-## Setup Instructions
+---
 
-Follow these steps to set up the project environment:
+## ⚙️ Setup Instructions
 
 ### 1. Create a Virtual Environment
 
-It's recommended to use a virtual environment to manage project dependencies and avoid version conflicts with other projects.
-
-Run the following commands to create and activate a virtual environment:
-
-**On Windows:**
+**Windows:**
 ```bash
 python -m venv myenv
 myenv\Scripts\activate
 ```
-
-**On macOS/Linux:**
+**macOS/Linux:**
 ```bash
 python3 -m venv myenv
 source myenv/bin/activate
 ```
-
 ### 2. Install Dependencies
-
-Once the virtual environment is activated, install the necessary dependencies using the requirements.txt file.
-
 ```bash
 pip install -r requirements.txt
 ```
+## 🚀 Running the Script
 
-### 3. Running the Script
-After installing the dependencies, you can run the Python script to process the GTM container JSON file. Make sure to replace the path to your JSON file in the script with the actual path to your GTM exported container file. The JSON exported file must be inside the containers folder. The variable name to change is json_file.
+Place your GTM container export file (JSON) into the `containers/` directory.
+
+Run the script with the `--json` argument:
 
 ```bash
-python extract_gtm_tags.py
+python extract_gtm_tags.py --json GTM-XXXXXX.json
 ```
+## 📝 Notes on Built-In Triggers
 
-This will generate an Excel file with two sheets:
+Some default GTM triggers (like **All Pages - Page View**) are not included in JSON exports. These are manually injected using the YAML config.
 
-Tags: Contains the Tag Name, Tag Type, Firing Triggers, and Blocking Triggers.
+### Example Built-In Triggers (defined in `config/mappings.yaml`):
 
-Triggers: Contains the Trigger Name and Trigger ID.
+```yaml
+built_in_triggers:
+  - name: All Pages - Page View
+    triggerId: '2147479553'
+  - name: Initialization - All Pages
+    triggerId: '2147479573'
+```
+## 📌 Example Output Columns
 
-## Additional Notes
-Make sure your GTM container JSON file is correctly formatted before running the script. Ensure that by exporting your container in the Admin section of your Google Tag Manager property.
+### 🏷️ Tags Sheet
+- Tag ID  
+- Tag Name  
+- Tag Type *(including custom template name)*  
+- Firing Triggers  
+- Blocking Triggers  
 
-This script currently assumes the GTM container is structured in a specific way. If your container structure differs, some modifications may be needed in the script.
+### 🎯 Triggers Sheet
+- Trigger ID  
+- Trigger Name  
 
-The Excel file is saved in the excel directory unless you specify a different path.
-
-## Note on Built-In Triggers
-
-Some built-in triggers, such as **All Pages PageView** and **Initialization - All Pages**, are pre-configured in Google Tag Manager (GTM) and are not included in the exported GTM container JSON by default. These built-in triggers are part of GTM's default setup and are automatically applied to tags in your container.
-
-### Manual Addition of Built-In Triggers
-
-In this script, certain **built-in triggers** (such as **All Pages PageView** and **Initialization - All Pages**) are manually added to the list of triggers. This is necessary because built-in triggers do not appear in the GTM container's exported JSON with trigger IDs.
-
-For example, the following built-in triggers are manually added:
-
-- **All Pages - Page View** (Trigger ID: 2147479553)
-- **Initialization - All Pages** (Trigger ID: 2147479573)
-
-These manually added triggers will be included in the output Excel file under the **Triggers** sheet, allowing you to see the corresponding tags and their associated triggers.
-
-### Why Manual Addition?
-
-Built-in triggers like **Page View** and **Click** are not exported with their trigger IDs in the GTM container's JSON. Therefore, we manually include their names and IDs in the script to ensure that they are represented in the final data output.
-
-If you need to add more built-in triggers, simply update the `built_in_triggers` list in the script with the trigger name and corresponding ID.
-
-```python
-built_in_triggers = [
-    {'name': 'All Pages - Page View', 'triggerId': 2147479553},
-    {'name': 'Initialization - All Pages', 'triggerId': 2147479573},
-    # Add more built-in triggers here if needed
-]
+### 🧩 Variables Sheet
+- Variable ID  
+- Variable Name  
+- Variable Type  
+- Variable Description  

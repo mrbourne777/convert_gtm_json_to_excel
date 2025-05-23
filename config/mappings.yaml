@@ -1,0 +1,23 @@
+variable_types:
+  v: DataLayer Variable
+  c: Constant
+  gas: Google Analytics Setting
+  u: URL
+  j: JavaScript Variable
+  jsm: Custom JavaScript
+  d: DOM Element
+  k: First Party Cookie
+  remm: RegEx Table
+  aev: Auto-Event Variable
+  awec: User-Provided Data
+  smm: Lookup Table
+  gtcs: Google Tag Configuration Setting
+  gtes: Google Tag Event Setting
+
+built_in_triggers:
+  - name: All Pages - Page View
+    triggerId: '2147479553'
+  - name: Initialization - All Pages
+    triggerId: '2147479573'
+  - name: Consent Initialization - All Pages
+    triggerId: '2147479572'
